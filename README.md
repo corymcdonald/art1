@@ -19,4 +19,4 @@ Then experiment!
 
 ## Examples 🖼
 
-![Example 1](examples/1.gip)
+![Example 1](examples/art1.gif)
