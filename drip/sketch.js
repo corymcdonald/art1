@@ -38,29 +38,30 @@ function draw() {
 
   // Set the counter to start at the character you want
   // in this case 35, which is the # symbol
-  let counter = 65;
+  let counter = 0;
+  let words = ['S', 'P', 'O', 'O', 'K', 'Y', 'S', 'C', 'A', 'R', 'Y'];
 
   // This is our drawing loop that we use to draw all the letters
   for (let y = 0; y < height - gap; y += gap) {
     for (let x = 0; x < width - gap; x += gap) {
       // Use the counter to retrieve individual letters by their Unicode number
-      let letter = char(counter);
+      let letter = words[counter]
 
       // Add different color to the vowels and other characters
       // Try changing this to be something different
-      if (letter === "A" || letter === "R" || letter === "T") {
-        fill("#ed225d");
-      } else {
-        fill(0);
-      }
+      // if (letter === "A" || letter === "R" || letter === "T") {
+      //   fill("#ed225d");
+      // } else {
+      fill(255, 0, 0);
+      // }
 
       // Draw the letter to the screen
       text(letter, x, y);
 
       counter++;
       // If we go over the set of ASCII characters then we shoudl go back to the start :)
-      if (counter > 124) {
-        counter = 65;
+      if (counter >= words.length) {
+        counter = 0;
       }
     }
   }
@@ -68,7 +69,9 @@ function draw() {
 
 class Drip {
   constructor(x, y) {
-    this.mass = 0.1;
+    this.originalY = y;
+    this.stopDrawing = false;
+    this.mass = random(0, 0.3);
     this.position = createVector(x, y);
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
@@ -81,6 +84,13 @@ class Drip {
   }
 
   update() {
+    if (random() > 0.9 && this.mass > 0) {
+      this.mass -= 0.005
+    }
+    if (this.mass <= 0) {
+      return;
+    }
+
     // Velocity changes according to acceleration
     this.velocity.add(this.acceleration);
     // position changes by velocity
@@ -93,7 +103,12 @@ class Drip {
   }
 
   display() {
-    fill(255, 127);
+    noStroke();
+
+    var gradient = (Math.ceil(this.position.y - this.originalY) * 2)
+    fill(255 - gradient, 0, 0)
+
+
     ellipse(this.position.x, this.position.y, this.mass * 16, this.mass * 16);
   }
 }
