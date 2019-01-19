@@ -1,32 +1,44 @@
+var theta;
+
 function setup() {
   createCanvas(640, 360);
-  background(51);
-
-  // Call the recursive function
-  cantor(35, 0, 730);
 }
-
 
 function draw() {
-  // No need to loop
-  noLoop();
+  background(51);
+  // Let's pick an angle 0 to 90 degrees based on the mouse position
+  theta = map(mouseX, 0, width, 0, PI / 2);
+
+  // Start the tree from the bottom of the screen
+  translate(width / 2, height);
+  stroke(255);
+  branch(120);
 }
 
+function branch(len) {
+  // Each branch will be 2/3rds the size of the previous one
 
-function cantor(x, y, len) {
+  //float sw = map(len,2,120,1,10);
+  //strokeWeight(sw);
+  strokeWeight(2);
 
-  var h = 30;
+  line(0, 0, 0, -len);
+  // Move to the end of that line
+  translate(0, -len);
 
-  // recursive exit condition
-  if (len >= 1) {
-    // Draw line (as rectangle to make it easier to see)
-    noStroke();
-    fill(255);
-    rect(x, y, len, h / 3);
-    // Go down to next y position
-    y += h;
-    // Draw 2 more lines 1/3rd the length (without the middle section)
-    cantor(x, y, len / 3);
-    cantor(x + len * 2 / 3, y, len / 3);
+  len *= 0.66;
+  // All recursive functions must have an exit condition!!!!
+  // Here, ours is when the length of the branch is 2 pixels or less
+  if (len > 2) {
+    push(); // Save the current state of transformation (i.e. where are we now)
+    rotate(theta); // Rotate by theta
+    branch(len); // Ok, now call myself to draw two new branches!!
+    pop(); // Whenever we get back here, we "pop" in order to restore the previous matrix state
+
+    // Repeat the same thing, only branch off to the "left" this time!
+    push();
+    rotate(-theta);
+    branch(len);
+    pop();
   }
 }
